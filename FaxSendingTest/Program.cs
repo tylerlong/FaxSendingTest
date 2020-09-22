@@ -11,7 +11,7 @@ namespace FaxSendingTest
         static void Main(string[] args)
         {
             DotEnv.Config(true);
-            
+
             Task.Run(async () =>
             {
                 using (var rc = new RestClient(
@@ -20,6 +20,8 @@ namespace FaxSendingTest
                     Environment.GetEnvironmentVariable("RINGCENTRAL_SERVER_URL")
                 ))
                 {
+                    Console.WriteLine(Environment.GetEnvironmentVariable("RINGCENTRAL_EXTENSION"));
+
                     await rc.Authorize(
                         Environment.GetEnvironmentVariable("RINGCENTRAL_USERNAME"),
                         Environment.GetEnvironmentVariable("RINGCENTRAL_EXTENSION"),
@@ -28,20 +30,25 @@ namespace FaxSendingTest
 
                     await rc.Restapi().Account().Extension().Fax().Post(new CreateFaxMessageRequest
                     {
-                        attachments = new []{ new Attachment
+                        attachments = new[]
                         {
-                            fileName = "TestingFile.pdf",
-                            contentType = "application/pdf", 
-                            bytes = File.ReadAllBytes(Environment.GetEnvironmentVariable("PDF_FILE_TO_SEND"))
-                        }},
-                        to = new []{ new MessageStoreCalleeInfoRequest
+                            new Attachment
+                            {
+                                fileName = "TestingFile.pdf",
+                                contentType = "application/pdf",
+                                bytes = File.ReadAllBytes(Environment.GetEnvironmentVariable("PDF_FILE_TO_SEND"))
+                            }
+                        },
+                        to = new[]
                         {
-                            phoneNumber = Environment.GetEnvironmentVariable("RINGCENTRAL_RECEIVER")
-                        } }
+                            new MessageStoreCalleeInfoRequest
+                            {
+                                phoneNumber = Environment.GetEnvironmentVariable("RINGCENTRAL_RECEIVER")
+                            }
+                        }
                     });
                     Console.WriteLine("Fax sent");
                 }
-
             }).GetAwaiter().GetResult();
         }
     }
