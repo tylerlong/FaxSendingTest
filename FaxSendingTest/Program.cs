@@ -20,7 +20,7 @@ namespace FaxSendingTest
                     Environment.GetEnvironmentVariable("RINGCENTRAL_SERVER_URL")
                 ))
                 {
-                    Console.WriteLine(Environment.GetEnvironmentVariable("RINGCENTRAL_EXTENSION"));
+                    Console.WriteLine(Environment.GetEnvironmentVariable("RINGCENTRAL_USERNAME"));
 
                     await rc.Authorize(
                         Environment.GetEnvironmentVariable("RINGCENTRAL_USERNAME"),
@@ -34,8 +34,8 @@ namespace FaxSendingTest
                         {
                             new Attachment
                             {
-                                fileName = "TestingFile.pdf",
-                                contentType = "application/pdf",
+                                fileName = "test.png",
+                                contentType = "image/png",
                                 bytes = File.ReadAllBytes(Environment.GetEnvironmentVariable("PDF_FILE_TO_SEND"))
                             }
                         },
